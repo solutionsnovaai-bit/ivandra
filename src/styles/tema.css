@@ -1,0 +1,37 @@
+/*
+  Cores e tokens, tirados do logotipo:
+  terracota rosado (o monograma e o nome), dourado champanhe (o raminho e os traços),
+  pêssego e os tons claros de fundo, do creme à parede do topo.
+*/
+@theme {
+  --color-creme: #FCF6F0;
+  --color-creme-2: #FFFCF8;
+  --color-nata: #F6E8DA;
+  --color-parede: #EFDCC8;
+  --color-sombra: #D2B79E;
+  --color-champanhe: #C9A36B;
+  --color-pessego: #F2C4A6;
+  --color-terracota: #A4513D;
+  --color-cacau: #4B2A1C;
+  --color-cacau-2: #38200F;
+  --color-tinta: #2E211B;
+  --color-tinta-2: #63524A;
+  --color-linha: rgb(46 33 27 / 0.14);
+
+
+  --font-display: 'Bodoni Moda', 'Bodoni Reserva', 'Didot', Georgia, serif;
+  --font-sans: 'Instrument Sans', 'Instrument Reserva', ui-sans-serif, system-ui, sans-serif;
+
+  --ease-luxo: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-cortina: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-mola: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+:root {
+  --margem: clamp(20px, 5.2vw, 80px);
+  --largura: 1360px;
+  --topo-h: 76px;
+  --secao-y: clamp(96px, 12.5vw, 190px);
+  --arco: 999px 999px 10px 10px;
+}
+@media (max-width: 767px) { :root { --topo-h: 64px; } }

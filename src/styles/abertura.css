@@ -1,0 +1,32 @@
+/* ---------- Abertura ---------- */
+.abertura { position: fixed; inset: 0; z-index: 100; pointer-events: none; contain: strict; overflow: hidden; }
+.abertura.is-bloqueando { pointer-events: auto; }
+/* o papel creme (na frente) e o véu pêssego (logo atrás): os dois sobem como cortinas, um depois do outro */
+.ab-papel, .ab-veu {
+  position: absolute; inset: 0 0 -4% 0; will-change: transform;
+  transition: transform 1.15s var(--ease-cortina), border-radius .9s var(--ease-luxo);
+}
+.ab-papel { background-color: var(--color-creme); }
+.ab-veu { background-color: var(--color-pessego); transition-delay: .14s; }
+.abertura.is-saindo .ab-papel, .abertura.is-saindo .ab-veu { transform: translate3d(0, -108%, 0); border-radius: 0 0 50% 50% / 0 0 11vh 11vh; }
+
+.ab-palco { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+/* o logotipo inteiro voa com uma única matriz, medida em pixels da tela */
+.ab-voo { transform-box: view-box; transform-origin: 0 0; will-change: transform, opacity; transition: opacity .4s var(--ease-luxo) .3s; }
+.abertura.is-saindo .ab-voo { opacity: 0; }
+.ab-terra { fill: #B0543A; }
+.ab-ouro { fill: #C9A36B; }
+.ab-mono, .ab-ouro, .ab-nome { opacity: 0; }
+.is-montando .ab-mono { animation: ab-sobe 1.3s var(--ease-luxo) .15s forwards; }
+.is-montando .ab-ouro { animation: ab-sobe 1.15s var(--ease-luxo) .75s forwards; }
+.is-montando .ab-nome { animation: ab-sobe 1.15s var(--ease-luxo) 1.2s forwards; }
+@keyframes ab-sobe { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
+html[data-abertura="rapida"] .is-montando .ab-mono, html[data-abertura="rapida"] .is-montando .ab-ouro, html[data-abertura="rapida"] .is-montando .ab-nome { animation-duration: .55s; animation-delay: .05s; }
+
+.ab-contador {
+  position: absolute; left: 50%; bottom: max(calc(4% + 7vh), calc(4% + env(safe-area-inset-bottom) + 28px));
+  transform: translateX(-50%); color: var(--color-terracota); transition: opacity .4s;
+}
+.abertura.is-saindo .ab-contador { opacity: 0; }
+.ab-numero { font-family: var(--font-display); font-style: italic; font-size: clamp(1.7rem, 3.6vh, 2.3rem); line-height: 1; letter-spacing: .02em; }
+html[data-abertura="rapida"] .ab-contador { display: none; }
