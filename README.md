@@ -1,4 +1,4 @@
-# Ivandra Maggioni · Espaço da Beleza
+# Ivandra Maggione · Espaço da Beleza
 
 Site de uma página (Rua Igaroi, 115, Jardim Nordeste, São Paulo).
 

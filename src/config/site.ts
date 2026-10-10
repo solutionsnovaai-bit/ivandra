@@ -3,7 +3,7 @@
 */
 
 export const SITE = {
-  nome: 'Ivandra Maggioni',
+  nome: 'Ivandra Maggione',
   assinatura: 'Espaço da Beleza',
   /** Quem atende. */
   profissional: 'Ivandra',
@@ -37,12 +37,12 @@ export const ENDERECO_COMPLETO = [`${SITE.endereco.rua}, ${SITE.endereco.bairro}
 export const INSTAGRAM_URL = SITE.instagram ? `https://www.instagram.com/${SITE.instagram}/` : ''
 
 export const SEO = {
-  titulo: 'Ivandra Maggioni | Espaço da Beleza no Jardim Nordeste, São Paulo',
+  titulo: 'Ivandra Maggione | Espaço da Beleza no Jardim Nordeste, São Paulo',
   descricao:
-    'Espaço da Beleza Ivandra Maggioni, no Jardim Nordeste: mechas, loiros, coloração, corte, escova e unhas. Atendimento com hora marcada. Agende pelo WhatsApp.',
-  compartilharTitulo: 'Ivandra Maggioni · Espaço da Beleza',
+    'Espaço da Beleza Ivandra Maggione, no Jardim Nordeste: mechas, loiros, coloração, corte, escova e unhas. Atendimento com hora marcada. Agende pelo WhatsApp.',
+  compartilharTitulo: 'Ivandra Maggione · Espaço da Beleza',
   compartilharTexto: 'Mechas, loiros, cor e corte no Jardim Nordeste, com hora marcada.',
-  imagemAlt: 'Logotipo de Ivandra Maggioni Espaço da Beleza: as iniciais I e M entrelaçadas, um raminho de folhas e o nome do espaço.',
+  imagemAlt: 'Logotipo de Ivandra Maggione Espaço da Beleza: as iniciais I e M entrelaçadas, um raminho de folhas e o nome do espaço.',
   corTema: '#FCF6F0',
   corFundo: '#FCF6F0',
 } as const

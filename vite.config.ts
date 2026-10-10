@@ -11,7 +11,7 @@ import { ENDERECO_COMPLETO, SEO, SITE } from './src/config/site'
 function siteOrigin(mode: string) {
   const env = loadEnv(mode, '.', 'VITE_')
   const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  const raw = env.VITE_SITE_URL || (vercel ? `https://${vercel}` : 'https://ivandramaggioni.vercel.app')
+  const raw = env.VITE_SITE_URL || (vercel ? `https://${vercel}` : 'https://ivandramaggione.vercel.app')
   const url = new URL(raw)
   if (!['https:', 'http:'].includes(url.protocol)) throw new Error('VITE_SITE_URL deve usar HTTP ou HTTPS.')
   return url.origin
