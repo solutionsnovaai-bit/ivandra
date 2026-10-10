@@ -219,14 +219,11 @@
 /* ---------- Quem cuida ---------- */
 .sobre { overflow: clip; background: linear-gradient(180deg, var(--color-creme), var(--color-nata)); }
 .sobre-grade { position: relative; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1fr); gap: clamp(36px, 7vw, 120px); align-items: center; }
-.sobre-retrato { position: relative; width: 100%; max-width: 500px; padding: 0 5% 0 5%; }
-/* o fio dourado contorna o arco do retrato, um pouco maior que ele */
-.sobre-fio { position: absolute; inset: -4% -1% -2% -1%; width: 102%; height: 106%; overflow: visible; pointer-events: none; }
-.sobre-fio path { fill: none; stroke: var(--color-champanhe); stroke-width: 1.4; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-.sobre-fio circle { fill: var(--color-champanhe); }
-.sobre-foto { position: relative; width: 100%; aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--arco); }
+.sobre-retrato { position: relative; width: 100%; max-width: 520px; }
+/* a imagem aparece inteira: a moldura tem a mesma proporção dela */
+.sobre-foto { position: relative; width: 100%; aspect-ratio: 852 / 975; overflow: hidden; border-radius: clamp(16px, 2vw, 26px); box-shadow: 0 34px 44px -32px rgb(75 42 28 / .5); }
 .sobre-cortina { width: 100%; height: 100%; }
-.sobre-foto img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
+.sobre-foto img { width: 100%; height: 100%; object-fit: contain; }
 .sobre-paragrafos { margin-top: clamp(22px, 2.6vw, 32px); display: grid; gap: 18px; }
 .sobre-citacao { font-family: var(--font-display); font-style: italic; font-size: clamp(1.5rem, 2.5vw, 2.3rem); line-height: 1.18; letter-spacing: -.012em; color: var(--color-terracota); max-width: 17em; text-wrap: balance; }
 .sobre-pontos { margin-top: clamp(28px, 3vw, 40px); max-width: 460px; border-top: 1px solid var(--color-tinta); }

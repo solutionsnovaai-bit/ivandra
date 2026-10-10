@@ -46,8 +46,8 @@ export const SOBRE = {
   ],
   /** A frase dela, em destaque. */
   citacao: SITE.lema,
-  pontos: ['Mechas e loiros', 'Atendimento com hora marcada', 'Cabelo e unhas'],
-  fotoAlt: `${SITE.nome}, sentada numa poltrona clara, de blazer verde e roupa branca.`,
+  pontos: ['Apaixonada por pessoas, beleza e transformação', 'Mãe, amiga e inspiradora', 'Atendimento com hora marcada'],
+  fotoAlt: `Apresentação de ${SITE.nome}: ela sorrindo, de blazer bege, com as frases "Transformo beleza em propósito, vidas em histórias" e "Minha dor virou ponte, na vaidade encontrei propósito".`,
 } as const
 
 export const PASSOS = {

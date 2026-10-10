@@ -51,9 +51,9 @@ export const CABELOS = [
   cabelo('10', 'Corte curto com mechas acinzentadas'),
 ] as const
 
-/** Retrato de quem atende (4:5). */
+/** A apresentação de quem atende, mostrada inteira, sem recorte. */
 export const RETRATO: Foto = {
   avif: '/sobre/retrato-600.avif 600w, /sobre/retrato-850.avif 850w',
   webp: '/sobre/retrato-600.webp 600w, /sobre/retrato-850.webp 850w',
-  src: '/sobre/retrato-850.webp', largura: 850, altura: 1062,
+  src: '/sobre/retrato-850.webp', largura: 850, altura: 973,
 }
