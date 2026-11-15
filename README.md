@@ -1,29 +1,32 @@
-# Ivandra Maggione · Espaço da Beleza
+# Dra. Michele Pira · Estética & Saúde Integrativa
 
-Site de uma página (Rua Igaroi, 115, Jardim Nordeste, São Paulo).
+Site institucional de uma página, feito a partir da estrutura do antigo projeto `ivandra`.
 
-React 19, TypeScript, Vite 6, Tailwind 4, Motion 12 e Lenis. Fontes e imagens servidas pelo próprio site.
+## Identidade
+
+- Monograma MP azul-marinho com flor de lótus rosa; tons de rosé, creme e champanhe.
+- Hero desktop e mobile com identidade já embutida na imagem. No mobile a arte respeita sua proporção original, **sem object-fit: cover e sem zoom forçado**.
+- Intro/loading animada com o logotipo e fallback para preferência de movimento reduzido.
+- Não contém a antiga galeria de cabelos nem serviços de salão. As imagens e textos antigos foram retirados da experiência do site.
+
+## Tecnologias e execução
+
+React 19, TypeScript, Vite 6, Motion 12, Tailwind CSS 4.
 
 ```bash
 npm ci
-npm run dev      # http://localhost:4173
-npm run build    # gera a pasta dist/
+npm run check
+npm run build
 ```
 
-**Vercel:** framework Vite, build `npm run build`, saída `dist`. Não precisa de variável de ambiente.
+Vercel: build `npm run build`, saída `dist`. O `vite.config.ts` preenche SEO e redes sociais.
 
-**Aparecer no Google:** o site sai com `indexar: false` em `src/config/site.ts` (prévia). Troque para `true` ao publicar de vez.
+## Dados e responsabilidade
 
-| O quê | Arquivo |
-| --- | --- |
-| WhatsApp, Instagram, endereço, mensagens prontas | `src/config/site.ts` |
-| Textos de todas as seções | `src/content/textos.ts` |
-| Lista de serviços | `src/content/servicos.ts` |
-| Cores e fontes | `src/styles/tema.css` |
-| Imagens (topo, cabelos, retrato, logotipo em papel) | `public/` e `src/config/imagens.ts` |
-
-Ordem do site: abertura → topo com o logotipo na parede → fita → o jeito de atender → serviços →
-cabelos (carrossel que anda sozinho) → quem cuida → como funciona → onde fica → convite → rodapé.
-
-As posições do logotipo dentro das artes do topo ficam em `ALVOS` (`src/components/abertura/marca.ts`);
-se trocar as artes, esses números e as medidas do topo em `src/styles/secoes.css` precisam ser refeitos.
+- Contatos e SEO em `src/config/site.ts`.
+- Conteúdo, seções e tela de carregamento em `src/App.tsx`.
+- Tema e responsivo em `src/styles/michele.css`.
+- Artes finais em `public/michele/`.
+- Endereço, serviços publicamente listados e experiência informada em perfil profissional estão sujeitos a confirmação pelo estabelecimento.
+- As imagens de apresentação são **artes ilustrativas geradas para a identidade visual**; não foram publicadas como documentos clínicos ou fotografias de resultados.
+- O site sai com `indexar: false` até a confirmação do domínio definitivo. Depois, mude para `true` e publique.
