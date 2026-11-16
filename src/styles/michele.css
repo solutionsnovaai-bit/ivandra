@@ -173,8 +173,9 @@ h1 em, h2 em { font-weight: 500; color: #b87786; }
 
 .mp-about { background: #fffaf6; }
 .mp-about-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: clamp(42px,7vw,110px); align-items: center; }
-.mp-about-image { position: relative; min-height: 530px; width: 100%; overflow: hidden; border-radius: 220px 220px 16px 16px; background: #e9cfbe; }
-.mp-about-image img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; object-position: center 12%; }
+/* Retrato vertical 485x800: manter a proporcao real em qualquer viewport, sem crop ou zoom. */
+.mp-about-image { position: relative; width: min(100%, 470px); min-height: 0; aspect-ratio: 485 / 800; margin-inline: auto; overflow: hidden; border-radius: 240px 240px 16px 16px; background: #f4e6df; box-shadow: 0 22px 55px rgba(30,41,59,.08); }
+.mp-about-image img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
 .mp-image-badge { position: absolute; bottom: 26px; left: 24px; right: 24px; display: flex; align-items: center; gap: 14px; color: #fff; background: rgba(18,55,93,.91); padding: 18px 22px; border-radius: 9px; font-family: var(--mp-display); font-size: 1.2rem; line-height: 1.25; }
 .mp-image-badge svg { color: #eed5c1; flex: none; }
 .mp-about-copy h2 { font-size: clamp(2.9rem,4.5vw,5.2rem); margin: 20px 0 27px; }
@@ -264,7 +265,7 @@ h1 em, h2 em { font-weight: 500; color: #b87786; }
   .mp-services-heading .mp-section-heading { width: auto; }
   .mp-services-heading > div:last-child { max-width: 690px; }
   .mp-about-grid, .mp-location-grid { grid-template-columns: 1fr; }
-  .mp-about-image { max-width: 700px; min-height: 420px; }
+  .mp-about-image { max-width: 430px; min-height: 0; }
   .mp-process-steps { gap: 17px; }
   .mp-step h3 { font-size: 1.55rem; }
   .mp-footer-grid { grid-template-columns: 1.3fr .7fr; }
@@ -287,7 +288,7 @@ h1 em, h2 em { font-weight: 500; color: #b87786; }
   .mp-services-grid { grid-template-columns: 1fr; gap: 13px; margin-top: 30px; }
   .mp-service-card { min-height: 0; padding: 32px 27px; }
   .mp-service-card h3 { font-size: 2rem; }
-  .mp-about-image { min-height: 350px; }
+  .mp-about-image { width: min(100%, 390px); max-width: 390px; min-height: 0; aspect-ratio: 485 / 800; }
   .mp-about-copy h2, .mp-location-text h2 { font-size: 3.05rem; }
   .mp-quote p { font-size: 2.45rem; }
   .mp-process-steps { grid-template-columns: 1fr; gap: 12px; margin-top: 40px; }
