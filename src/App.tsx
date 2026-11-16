@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import {
   ArrowRight, ArrowUpRight, ChevronRight,
@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { SITE, MENSAGENS } from './config/site'
 import { ResultsCarousel, type ResultCard } from './components/ResultsCarousel'
+import { BrandIntro } from './components/BrandIntro'
 
 const assets = {
   heroDesktop: '/michele/hero-desktop.webp',
@@ -41,94 +42,6 @@ function Reveal({ children, className = '', delay = 0 }: {children: ReactNode;cl
     {children}
   </motion.div>
 }
-
-type LoaderPhase = 'drawing' | 'flight' | 'curtain'
-
-function Loader({ active, onFinished }: { active: boolean; onFinished: () => void }) {
-  const reduced = useReducedMotion()
-  const markRef = useRef<HTMLImageElement>(null)
-  const [phase, setPhase] = useState<LoaderPhase>('drawing')
-  const [flight, setFlight] = useState({ x: 0, y: 0, scale: 1 })
-
-  useEffect(() => {
-    if (!active) return
-    if (reduced) { onFinished(); return }
-    let alive = true
-    const timers: number[] = []
-    function wait(ms: number) {
-      return new Promise<void>(resolve => { timers.push(window.setTimeout(resolve, ms)) })
-    }
-
-    async function open() {
-      let visited = false
-      try { visited = sessionStorage.getItem('mp-intro-completa') === '1' } catch { /* Armazenamento indisponível. */ }
-      const hero = new Image()
-      hero.src = window.matchMedia('(max-width: 900px)').matches ? assets.heroMobile : assets.heroDesktop
-      await Promise.all([
-        wait(visited ? 650 : 1650),
-        Promise.race([Promise.all([document.fonts.ready, hero.decode().catch(() => undefined)]), wait(5000)]),
-      ])
-      if (!alive) return
-      const mark = markRef.current?.getBoundingClientRect()
-      const header = document.querySelector('.mp-brand-flight-target')?.getBoundingClientRect()
-      if (mark && header && mark.width > 0) {
-        setFlight({
-          x: header.left + header.width / 2 - (mark.left + mark.width / 2),
-          y: header.top + header.height / 2 - (mark.top + mark.height / 2),
-          scale: header.width / mark.width,
-        })
-      }
-      setPhase('flight')
-      await wait(720)
-      if (!alive) return
-      setPhase('curtain')
-      await wait(720)
-      if (!alive) return
-      try { sessionStorage.setItem('mp-intro-completa', '1') } catch { /* Armazenamento indisponível. */ }
-      onFinished()
-    }
-
-    void open()
-    return () => {
-      alive = false
-      timers.forEach(clearTimeout)
-    }
-  }, [active, reduced, onFinished])
-
-  return <AnimatePresence>
-    {active && <motion.div className={`mp-loader mp-stage-${phase}`}
-      role="status" aria-label="Preparando o espaço da Dra. Michele Pira"
-      exit={{ opacity: 0 }} transition={{ duration: .22 }}>
-      <div className="mp-loader-veil" aria-hidden="true" />
-      <div className="mp-loader-paper" aria-hidden="true" />
-      <motion.div className="mp-loader-orbit" aria-hidden="true"
-        initial={{ opacity: 0, scale: .92, rotate: -18 }}
-        animate={phase === 'drawing' ? { opacity: 1, scale: 1, rotate: 0 } : { opacity: 0, scale: 1.12 }}
-        transition={{ duration: .75, ease: EASE }} />
-      <div className="mp-loader-content">
-        <motion.div className="mp-loader-flight"
-          animate={phase === 'drawing' ? { x: 0, y: 0, scale: 1, opacity: 1 } : { ...flight, opacity: phase === 'curtain' ? 0 : 1 }}
-          transition={phase === 'curtain' ? { duration: .18 } : { duration: .7, ease: [.76, 0, .24, 1] }}>
-          <motion.div className="mp-loader-mark"
-            initial={{ opacity: 0, scale: .92, y: 12 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: .7, ease: EASE }}>
-            <img ref={markRef} src={assets.navLogo} width={342} height={266} alt="" fetchPriority="high" />
-            <span aria-hidden="true" />
-          </motion.div>
-        </motion.div>
-        <motion.div className="mp-loader-signature"
-          initial={{ opacity: 0, y: 10 }}
-          animate={phase === 'drawing' ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }}
-          transition={{ duration: phase === 'drawing' ? .55 : .2, delay: phase === 'drawing' ? .22 : 0, ease: EASE }}>
-          <span>Michele Pira</span>
-          <small>{SITE.assinatura}</small>
-        </motion.div>
-      </div>
-    </motion.div>}
-  </AnimatePresence>
-}
-
 
 function Header() {
   const [open, setOpen] = useState(false)
@@ -490,7 +403,8 @@ export default function App() {
     return () => { document.body.style.overflow = previous }
   }, [loading])
   return <>
-    <Loader active={loading} onFinished={finishLoading}/>
+    <BrandIntro active={loading} onFinished={finishLoading} artwork={assets.horizontalLogo}
+      heroDesktop={assets.heroDesktop} heroMobile={assets.heroMobile}/>
     <Header/>
     <main>
       <Hero/><Philosophy/><Services/><ResultsCarousel cards={resultCards} evaluationUrl={wa()}/><OurSpace/><About/><Quote/><HowItWorks/><Location/><FinalCta/>

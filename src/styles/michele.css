@@ -41,58 +41,48 @@ h1 em, h2 em { font-weight: 500; color: #b87786; }
 .mp-text-link { color: var(--mp-navy); font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid #bb9e8a; transition: gap .25s; }
 .mp-text-link:hover { gap: 17px; }
 
-/* O monograma da abertura é a mesma arte usada na navbar. */
-.mp-loader {
+/* A abertura desenha o monograma diretamente sobre o arquivo oficial. */
+.mp-intro {
   position: fixed; inset: 0; z-index: 999; isolation: isolate;
   display: grid; place-items: center; overflow: hidden;
 }
-.mp-loader-veil, .mp-loader-paper {
-  position: absolute; inset: -2% -2% -4%;
-  transition: transform .68s cubic-bezier(.76,0,.24,1);
-}
-.mp-loader-veil { background: #d7b18d; transition-delay: .035s; }
-.mp-loader-paper {
+.mp-intro-veil, .mp-intro-paper { position: absolute; inset: -1px; pointer-events: none; }
+.mp-intro-veil { background: #d8b287; }
+.mp-intro-paper {
+  overflow: hidden;
+  border-bottom: 1px solid #b99773;
   background:
-    radial-gradient(ellipse at 50% 42%, #275e96 0%, #143c66 36%, transparent 67%),
-    linear-gradient(145deg,#081b35,#102d50 60%,#091b33);
+    radial-gradient(ellipse at 7% 9%,#b6d1ee 0%,transparent 49%),
+    radial-gradient(ellipse at 97% 90%,#c8d9f1 0%,transparent 46%),
+    linear-gradient(140deg,#f0e1d9 0%,#fbf2ea 58%,#ecd5ce 100%);
 }
-.mp-stage-curtain .mp-loader-paper, .mp-stage-curtain .mp-loader-veil { transform: translateY(-109%); }
-.mp-loader-orbit {
-  position: absolute; width: min(85vw, 510px, 68svh); aspect-ratio: 1;
-  border: 1px solid #e6c5a357; border-radius: 50%;
-  background: radial-gradient(circle, #82b5fd29, transparent 70%);
-  box-shadow: 0 0 0 22px #baedff0c, 0 0 0 48px #ead2b509, 0 0 75px #5f9dff24;
-  pointer-events: none;
+.mp-intro-paper::after {
+  content: ''; position: absolute; inset: clamp(12px,3.5vw,46px);
+  border: 1px solid #b6916b54; opacity: .76; pointer-events: none;
 }
-.mp-loader-orbit::after {
-  content: ''; position: absolute; inset: -1px; border-radius: inherit;
-  border: 1px solid transparent; border-top-color: #f5d8b3;
-  animation: mp-orbit-turn 3.6s linear infinite;
+.mp-intro-light {
+  position: absolute; inset: -8%;
+  background: radial-gradient(ellipse at 51% 43%,#fffcf8 0%,#fffcf87d 32%,transparent 69%);
 }
-@keyframes mp-orbit-turn { to { transform: rotate(360deg); } }
-.mp-loader-content { position: relative; display: grid; justify-items: center; gap: 25px; text-align: center; }
-.mp-loader-flight { position: relative; z-index: 2; }
-.mp-loader-mark {
-  position: relative; width: min(61vw, 285px, 44svh); overflow: hidden;
-  padding: 16px; border: 1px solid #ebc8a1; border-radius: 25px;
-  background: linear-gradient(135deg,#fff 23%,#f8e9dc 100%);
-  box-shadow: 0 16px 54px #0314299c, 0 0 46px #91c5ff4d;
+.mp-intro-content {
+  position: relative; display: grid; justify-items: center;
+  text-align: center; gap: clamp(10px, 2.4svh, 22px); pointer-events: none;
 }
-.mp-loader-mark img { width: 100%; height: auto; mix-blend-mode: multiply; filter: saturate(1.18); }
-.mp-loader-mark > span {
-  position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(112deg,transparent 30%,#ffffffb3 49%,transparent 65%);
-  mix-blend-mode: screen;
-  animation: mp-mark-sheen 1.1s .25s both;
+.mp-intro-flight { mix-blend-mode: multiply; transform-origin: center; }
+.mp-intro-logo { display: block; width: min(83vw, 422px, 58svh); height: auto; overflow: hidden; }
+.mp-intro-signature { display: grid; gap: 9px; color: var(--mp-navy-deep); }
+.mp-intro-signature span { font: 500 clamp(2.05rem, 6.6vw, 3.35rem)/1 var(--mp-display); letter-spacing: -.045em; }
+.mp-intro-signature small {
+  font: 700 clamp(.57rem, 2.4vw, .72rem)/1.45 var(--mp-sans);
+  text-transform: uppercase; letter-spacing: .16em; color: #765448;
 }
-@keyframes mp-mark-sheen { from { transform: translateX(-115%); } to { transform: translateX(115%); } }
-.mp-loader-signature { display: grid; gap: 8px; color: #fff4e9; }
-.mp-loader-signature span { font: 500 clamp(2.1rem, 6vw, 3.4rem)/1 var(--mp-display); letter-spacing: -.024em; }
-.mp-loader-signature small { font: 700 clamp(.55rem, 2vw, .72rem)/1.4 var(--mp-sans); text-transform: uppercase; letter-spacing: .2em; color: #eed2bf; }
-@media (prefers-reduced-motion: reduce) {
-  .mp-loader-orbit::after, .mp-loader-mark > span { animation: none; }
-  .mp-loader-paper, .mp-loader-veil { transition: none; }
+.mp-intro-skip {
+  position: absolute; bottom: max(25px, calc(env(safe-area-inset-bottom) + 12px));
+  right: max(23px, calc(4.8vw + env(safe-area-inset-right)));
+  min-height: 44px; padding: 7px 14px; border: 1px solid #12375d38; border-radius: 999px;
+  color: var(--mp-navy-deep); background: #fff8f0b3; font-size: .72rem; font-weight: 700; cursor: pointer;
 }
+.mp-intro-skip:hover { background: #fff; }
 
 /* Navbar compacta e clara, deixa o hero com imagem inteira. */
 .mp-header { position: sticky; z-index: 110; top: 0; width: 100%; background: rgba(255,249,245,.93); border-bottom: 1px solid rgba(18,55,93,.07); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); transition: box-shadow .25s; }
