@@ -10,6 +10,8 @@ const assets = {
   heroDesktop: '/michele/hero-desktop.webp',
   heroMobile: '/michele/hero-mobile.webp',
   monogram: '/michele/monograma.webp',
+  navLogo: '/michele/catalogo/navbar-monograma.webp',
+  clinicPhoto: '/michele/catalogo/nosso-espaco.webp',
   fullLogo: '/michele/logo-loader.webp',
   ritual: '/michele/ritual.webp',
   portrait: '/michele/retrato-da-arte-mobile.webp',
@@ -218,7 +220,7 @@ function Header() {
   return <header className={`mp-header ${scroll ? 'scrolled' : ''}`}>
     <div className="mp-container mp-header-inner">
       <a href="#inicio" className="mp-brand" aria-label="Dra. Michele Pira, voltar ao início" onClick={() => setOpen(false)}>
-        <img src={assets.monogram} width="570" height="369" alt="" />
+        <img src={assets.navLogo} width="342" height="266" alt="" />
         <span><strong>MICHELE PIRA</strong><small>ESTÉTICA • SAÚDE INTEGRATIVA</small></span>
       </a>
       <nav className="mp-desktop-nav" aria-label="Navegação principal">
@@ -250,14 +252,14 @@ function Hero() {
       <img src={assets.heroDesktop} width="1550" height="872" alt="Arte ilustrativa da Dra. Michele Pira com monograma MP e flor de lótus" fetchPriority="high" />
     </picture>
     <div className="mp-hero-copy">
-      <span className="mp-eyebrow"><span className="mp-eyebrow-line" /> Estética que respeita sua essência</span>
-      <h1 id="mp-hero-title">Sua beleza merece <em>ser vivida</em> com naturalidade.</h1>
-      <p>Cuidado individualizado para valorizar quem você é, em cada fase da vida.</p>
+      <span className="mp-eyebrow"><span className="mp-eyebrow-line" /> Estética avançada no Tatuapé</span>
+      <h1 id="mp-hero-title">O cuidado que valoriza <em>quem você é.</em></h1>
+      <p>Toxina botulínica, preenchimento, skinbooster, peelings, mesoterapia e tratamentos faciais e corporais, com avaliação individualizada.</p>
       <div className="mp-hero-actions">
         <a href={wa()} target="_blank" rel="noopener noreferrer" className="mp-button mp-button-dark">Agendar minha avaliação <ArrowUpRight size={18}/></a>
         <a href="#filosofia" className="mp-text-link">Conheça nossa essência <ArrowRight size={17}/></a>
       </div>
-      <div className="mp-hero-trust"><Flower2 size={18}/><span>Estética • Saúde Integrativa • Tatuapé</span></div>
+      <div className="mp-hero-trust"><Flower2 size={18}/><span>Estética facial e corporal • Saúde integrativa • Tatuapé</span></div>
     </div>
   </section>
 }
@@ -268,13 +270,77 @@ const values = [
   { title: 'Autoestima renovada', icon: Heart, text: 'Cuidado com carinho, respeito e escuta.' },
 ]
 
-const services = [
-  { number: '01', title: 'Avaliação individualizada', caption: 'O início de tudo', text: 'Um momento para conversar sobre suas expectativas e entender quais cuidados podem fazer sentido para sua pele.' },
-  { number: '02', title: 'Envelhecimento cutâneo', caption: 'Naturalidade em cada fase', text: 'Atenção às mudanças da pele ao longo do tempo, com foco em planejamento personalizado e resultados naturais.' },
-  { number: '03', title: 'Mesoterapia', caption: 'Procedimentos estéticos', text: 'Saiba mais sobre a indicação e a disponibilidade deste procedimento durante uma avaliação profissional.' },
-  { number: '04', title: 'Cuidados com manchas', caption: 'Atenção ao tom da pele', text: 'Converse sobre opções de cuidados voltados ao clareamento e à uniformidade da aparência da pele.' },
-]
+type CatalogService = {
+  id: string
+  title: string
+  category: string
+  description: string
+  image: string
+  alt: string
+}
 
+const services: CatalogService[] = [
+  {
+    id: '01', title: 'Toxina botulínica', category: 'Estética facial',
+    description: 'Uma opção que pode ser avaliada para suavizar linhas de expressão, respeitando a harmonia do rosto.',
+    image: 'toxina-botulinica', alt: 'Comparativo facial publicado no catálogo da Dra. Michele Pira',
+  },
+  {
+    id: '02', title: 'Preenchimento facial', category: 'Estética facial',
+    description: 'Avaliação de proporções faciais e de possibilidades de preenchimento conforme cada necessidade.',
+    image: 'preenchimento', alt: 'Fotografias faciais em duas imagens do catálogo da profissional',
+  },
+  {
+    id: '03', title: 'Skinbooster', category: 'Hidratação da pele',
+    description: 'Saiba quando esse cuidado pode integrar um planejamento voltado à qualidade da pele.',
+    image: 'skinbooster', alt: 'Imagens comparativas faciais do catálogo, com marca MP original',
+  },
+  {
+    id: '04', title: 'Hydra Gloss Lips', category: 'Cuidados labiais',
+    description: 'Uma proposta de cuidado labial que pode ser conversada durante sua avaliação.',
+    image: 'hydra-gloss-lips', alt: 'Fotografia de lábios do catálogo Hydra Gloss Lips',
+  },
+  {
+    id: '05', title: 'Limpeza de pele convencional', category: 'Cuidados faciais',
+    description: 'Atendimento voltado à higiene e aos cuidados da pele, conforme sua avaliação.',
+    image: 'limpeza-convencional', alt: 'Montagem de fotografias de limpeza de pele do catálogo',
+  },
+  {
+    id: '06', title: 'Limpeza de pele biofotônica', category: 'Cuidados faciais',
+    description: 'Conheça esse protocolo e converse sobre a sua indicação com a equipe.',
+    image: 'limpeza-biofotonica', alt: 'Montagem original de limpeza de pele biofotônica do catálogo',
+  },
+  {
+    id: '07', title: 'Peeling químico superficial', category: 'Renovação da pele',
+    description: 'Procedimento cujo tipo e indicação dependem das características da pele.',
+    image: 'peeling-quimico', alt: 'Fotografia do espaço de atendimento utilizada no catálogo de peeling químico',
+  },
+  {
+    id: '08', title: 'Peeling diamantado', category: 'Renovação da pele',
+    description: 'Um dos cuidados listados no catálogo; converse sobre adequação e orientações.',
+    image: 'peeling-diamantado', alt: 'Fotografia original do espaço de atendimento no catálogo de peeling diamantado',
+  },
+  {
+    id: '09', title: 'Mesoterapia e enzimas', category: 'Estética corporal',
+    description: 'Planejamento individualizado de cuidados corporais. Indicações são definidas em avaliação.',
+    image: 'mesoterapia-enzimas', alt: 'Montagem corporal comparativa do catálogo de mesoterapia e enzimas',
+  },
+  {
+    id: '10', title: 'Lipoenzimática de papada', category: 'Contorno facial',
+    description: 'Converse sobre os cuidados e a indicação do protocolo para a região da papada.',
+    image: 'lipoenzimatica-papada', alt: 'Fotografias de perfil no catálogo de lipoenzimática de papada',
+  },
+  {
+    id: '11', title: 'Glúteos UP', category: 'Estética corporal',
+    description: 'Uma das opções de cuidados corporais apresentadas pela profissional.',
+    image: 'gluteos-up', alt: 'Montagem corporal com a marca Michele Pira no catálogo Glúteos UP',
+  },
+  {
+    id: '12', title: 'Cuidados com manchas senis', category: 'Saúde da pele',
+    description: 'Avaliação de alterações de tonalidade e das possibilidades de tratamento da pele.',
+    image: 'manchas-senis', alt: 'Montagem da pele do catálogo de remoção de manchas senis',
+  },
+]
 function Philosophy() {
   return <section className="mp-philosophy mp-section" id="filosofia">
     <div className="mp-container">
@@ -294,27 +360,65 @@ function Philosophy() {
 }
 
 function Services() {
-  return <section className="mp-services mp-section" id="cuidados">
+  return <section className="mp-services mp-section" id="cuidados" aria-labelledby="mp-services-title">
     <div className="mp-container">
       <div className="mp-services-heading">
         <Reveal className="mp-section-heading">
-          <span className="mp-kicker">Cuidado em cada detalhe</span>
-          <h2>Seu tempo. Sua pele. <em>Seu caminho.</em></h2>
+          <span className="mp-kicker">Tratamentos e procedimentos</span>
+          <h2 id="mp-services-title">Cuidados para a pele, <em>rosto e corpo.</em></h2>
         </Reveal>
-        <Reveal><p>Conheça algumas das áreas de atenção e converse diretamente com a equipe sobre a avaliação e a disponibilidade dos procedimentos.</p></Reveal>
+        <Reveal>
+          <p>Da toxina botulínica e do preenchimento aos peelings, skinbooster, mesoterapia e tratamentos corporais: conheça as opções do catálogo da Dra. Michele Pira.</p>
+        </Reveal>
       </div>
-      <div className="mp-services-grid">
-        {services.map((s, i) => <Reveal className="mp-service-card" key={s.title} delay={(i % 2) * .08}>
-          <span className="mp-service-number">{s.number} <span /></span>
-          <span className="mp-service-caption">{s.caption}</span>
-          <h3>{s.title}</h3><p>{s.text}</p>
-          <a href={wa(`Olá! Vim pelo site da Dra. Michele Pira e gostaria de saber mais sobre ${s.title.toLowerCase()}.`)}
-            target="_blank" rel="noopener noreferrer" aria-label={`Conversar sobre ${s.title} pelo WhatsApp`}>
-            Conversar sobre este cuidado <ArrowUpRight size={17}/>
-          </a>
-        </Reveal>)}
+      <div className="mp-services-grid mp-catalog-grid">
+        {services.map((item, index) =>
+          <Reveal className="mp-service-card mp-catalog-card" key={item.image} delay={(index % 2) * .06}>
+            <figure className="mp-catalog-photo">
+              <img src={`/michele/catalogo/${item.image}.webp`} width="480" height="480"
+                loading="lazy" decoding="async" alt={item.alt} />
+            </figure>
+            <div className="mp-catalog-details">
+              <div className="mp-catalog-topline">
+                <span>{item.category}</span>
+                <span className="mp-catalog-identity" aria-hidden="true">
+                  <img src={assets.navLogo} width="342" height="266" alt="" loading="lazy" />
+                </span>
+              </div>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+              <a href={wa(`Olá! Vi ${item.title} no site da Dra. Michele Pira e gostaria de saber mais sobre a avaliação.`)}
+                target="_blank" rel="noopener noreferrer" aria-label={`Consultar sobre ${item.title} no WhatsApp`}>
+                Saiba mais <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </Reveal>
+        )}
       </div>
-      <p className="mp-services-note">A indicação de qualquer procedimento depende de avaliação individualizada. As informações não substituem orientação profissional.</p>
+      <p className="mp-services-note">
+        Fotografias originais do catálogo profissional, recortadas sem modificar resultados.
+        A indicação de procedimentos depende de avaliação individual; resultados variam de pessoa para pessoa.
+      </p>
+    </div>
+  </section>
+}
+
+function OurSpace() {
+  return <section className="mp-space mp-section" id="espaco" aria-labelledby="mp-space-title">
+    <div className="mp-container mp-space-grid">
+      <Reveal className="mp-space-photo-wrap">
+        <div className="mp-space-photo">
+          <img src={assets.clinicPhoto} width="480" height="480" loading="lazy"
+            alt="Fotografia original do espaço de atendimento da Dra. Michele Pira, conforme seu catálogo" />
+        </div>
+        <span className="mp-space-signature" aria-hidden="true"><img src={assets.navLogo} width="342" height="266" alt="" /></span>
+      </Reveal>
+      <Reveal className="mp-space-copy">
+        <span className="mp-kicker"><Flower2 size={18}/> Nosso espaço</span>
+        <h2 id="mp-space-title">Um lugar para <em>cuidar de você.</em></h2>
+        <p>Além dos procedimentos, conhecer o ambiente e conversar com a profissional faz parte de uma escolha consciente. Veja uma imagem real do espaço e agende sua avaliação.</p>
+        <a href="#localizacao" className="mp-text-link">Onde estamos <ArrowUpRight size={17}/></a>
+      </Reveal>
     </div>
   </section>
 }
@@ -438,7 +542,7 @@ export default function App() {
     <Loader active={loading} onFinished={finishLoading}/>
     <Header/>
     <main>
-      <Hero/><Philosophy/><Services/><About/><Quote/><HowItWorks/><Location/><FinalCta/>
+      <Hero/><Philosophy/><Services/><OurSpace/><About/><Quote/><HowItWorks/><Location/><FinalCta/>
     </main>
     <Footer/>
     <a href={wa()} target="_blank" rel="noopener noreferrer" className="mp-fab" aria-label="Agendar avaliação pelo WhatsApp"><MessageCircle size={24}/><span className="mp-fab-pulse"/></a>
