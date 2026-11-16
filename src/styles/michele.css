@@ -41,22 +41,82 @@ h1 em, h2 em { font-weight: 500; color: #b87786; }
 .mp-text-link { color: var(--mp-navy); font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid #bb9e8a; transition: gap .25s; }
 .mp-text-link:hover { gap: 17px; }
 
-/* Carregamento: monograma + lotus, sem a antiga marca Ivandra. */
-.mp-loader { position: fixed; inset: 0; z-index: 999; display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle at 50% 38%, #fffaf6 0%, #f7e8e1 53%, #f2d7d0 110%); isolation: isolate; }
-.mp-loader::before, .mp-loader::after { content: ''; position: absolute; pointer-events: none; border: 1px solid rgba(174,129,111,.21); width: min(120vw,860px); aspect-ratio: 1; border-radius: 50%; transform: rotate(-18deg); }
-.mp-loader::after { width: min(95vw,650px); border-color: rgba(194,148,125,.15); }
-.mp-loader-aura { position: absolute; inset: 0; background: radial-gradient(40% 30% at 50% 50%,rgba(255,255,255,.78),transparent 78%); }
-.mp-loader-inner { z-index: 2; width: min(86vw, 460px); text-align: center; display: grid; justify-items: center; }
-.mp-loader-logo-wrap { width: 100%; position: relative; }
-.mp-loader-logo { width: min(100%,410px); max-height: min(52vh,370px); object-fit: contain; margin-inline: auto; mix-blend-mode: multiply; filter: drop-shadow(0 7px 17px rgba(116,55,40,.08)); }
-.mp-loader-orbit { position: absolute; inset: 12% 18%; border: 1px solid rgba(190,150,128,.28); border-radius: 50%; animation: mp-loader-orbit 7s linear infinite; }
-.mp-loader-orbit::before { content: '✦'; color: var(--mp-gold); position: absolute; left: 50%; top: -13px; font-size: 23px; }
-.mp-loader-tagline { font: italic 1.23rem var(--mp-display); color: var(--mp-navy); margin: 4px 0 24px; letter-spacing: .01em; }
-.mp-loader-progress { width: 126px; height: 2px; background: rgba(18,55,93,.12); border-radius: 3px; overflow: hidden; }
-.mp-loader-progress span { display: block; width: 32%; height: 100%; background: var(--mp-gold); transform-origin: left; animation: mp-loader-fill 2.1s cubic-bezier(.22,1,.36,1) both; }
-.mp-loader-bottom { position: absolute; bottom: max(22px, env(safe-area-inset-bottom)); font-size: 9px; font-weight: 750; letter-spacing: .27em; color: rgba(18,55,93,.65); }
-@keyframes mp-loader-orbit { to { transform: rotate(360deg); } }
-@keyframes mp-loader-fill { from { width: 0; } to { width: 100%; } }
+/* Abertura vetorial inspirada na Ivandra: desenho progressivo, voo do MP e duas cortinas. */
+.mp-loader-v2 {
+  position: fixed; inset: 0; z-index: 999; isolation: isolate;
+  display: grid; place-items: center; overflow: hidden; pointer-events: auto;
+  background: transparent; contain: layout paint;
+}
+.mp-loader-v2::before, .mp-loader-v2::after { content: none; }
+.mp-loader-veil, .mp-loader-paper {
+  position: absolute; inset: -2% -2% -4%; will-change: transform;
+  transition: transform 1.16s cubic-bezier(.76,0,.24,1), border-radius .96s cubic-bezier(.22,1,.36,1);
+}
+.mp-loader-veil { z-index: 0; background: #e9b7b4; transition-delay: .14s; }
+.mp-loader-paper {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at 19% 15%,rgba(255,255,255,.76),transparent 55%),
+    radial-gradient(ellipse at 86% 77%,rgba(236,190,182,.40),transparent 52%),
+    linear-gradient(139deg,#fffbf7 0%,#f8e9e3 57%,#f4ddd8 100%);
+}
+.mp-loader-paper::before {
+  content: ''; position: absolute; inset: 0; opacity: .28; pointer-events: none;
+  background-image: radial-gradient(#c7a69a .45px,transparent .5px);
+  background-size: 5px 5px;
+}
+.mp-stage-curtain .mp-loader-paper,
+.mp-stage-curtain .mp-loader-veil {
+  transform: translate3d(0,-109%,0);
+  border-radius: 0 0 50% 50% / 0 0 9vh 9vh;
+}
+.mp-loader-sheen {
+  position: absolute; z-index: 2; inset: -30%; pointer-events: none;
+  background: radial-gradient(circle at 50% 48%,rgba(255,255,255,.52),transparent 43%);
+  animation: mp-intro-light 4.2s ease-in-out infinite alternate;
+}
+@keyframes mp-intro-light { from { opacity: .5; transform: translateY(2%); } to { opacity: 1; transform: translateY(-2%); } }
+.mp-loader-content {
+  position: relative; z-index: 3; width: min(94vw,650px);
+  display: grid; place-items: center; text-align: center; padding: 0 12px;
+  transform: translateY(-3vh); pointer-events: none;
+}
+.mp-loader-symbol { width: min(91vw,540px); transform-origin: center; will-change: transform,opacity; }
+.mp-loader-drawing { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 7px 12px rgba(36,41,64,.07)); }
+.mp-loader-name { font: 500 27px 'Bodoni Moda',Georgia,serif; }
+.mp-loader-subtitle { font: 700 10px 'Instrument Sans',sans-serif; letter-spacing: .24em; }
+.mp-loader-caption {
+  margin: -8px 0 0; color: #9a6d77; font: italic 1.25rem 'Bodoni Moda',Georgia,serif;
+  letter-spacing: .01em; transition: opacity .22s;
+}
+.mp-stage-flight .mp-loader-caption { opacity: 0; }
+.mp-stage-curtain .mp-loader-content { opacity: 0; transition: opacity .26s ease .05s; }
+.mp-loader-meter {
+  position: absolute; z-index: 3; bottom: max(38px,calc(env(safe-area-inset-bottom) + 28px));
+  left: 50%; transform: translateX(-50%); display: grid; justify-items: center; gap: 13px;
+  width: min(74vw,260px); color: #12375d; transition: opacity .2s;
+}
+.mp-loader-counter { font: italic 2.2rem/1 'Bodoni Moda',Georgia,serif; font-variant-numeric: tabular-nums; }
+.mp-loader-track {
+  display: block; height: 2px; width: 150px; background: rgba(18,55,93,.14);
+  border-radius: 3px; overflow: hidden;
+}
+.mp-loader-track > span {
+  display: block; width: 100%; height: 100%; background: #b79261; transform-origin: left;
+  transition: transform .13s linear;
+}
+.mp-loader-meter-label { font: 700 9px 'Instrument Sans',sans-serif; letter-spacing: .22em; color: #977c79; white-space: nowrap; }
+.mp-stage-flight .mp-loader-meter, .mp-stage-curtain .mp-loader-meter { opacity: 0; }
+@media (max-width: 580px) {
+  .mp-loader-symbol { width: min(94vw,470px); }
+  .mp-loader-caption { font-size: 1.04rem; margin-top: -15px; }
+  .mp-loader-name { font-size: 28px; }
+  .mp-loader-subtitle { font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mp-loader-sheen { animation: none; }
+  .mp-loader-veil,.mp-loader-paper { transition: none; }
+}
 
 /* Navbar compacta e clara, deixa o hero com imagem inteira. */
 .mp-header { position: sticky; z-index: 110; top: 0; width: 100%; background: rgba(255,249,245,.93); border-bottom: 1px solid rgba(18,55,93,.07); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); transition: box-shadow .25s; }
@@ -114,7 +174,7 @@ h1 em, h2 em { font-weight: 500; color: #b87786; }
 .mp-about { background: #fffaf6; }
 .mp-about-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: clamp(42px,7vw,110px); align-items: center; }
 .mp-about-image { position: relative; min-height: 530px; width: 100%; overflow: hidden; border-radius: 220px 220px 16px 16px; background: #e9cfbe; }
-.mp-about-image img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; object-position: 72% center; }
+.mp-about-image img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; object-position: center 12%; }
 .mp-image-badge { position: absolute; bottom: 26px; left: 24px; right: 24px; display: flex; align-items: center; gap: 14px; color: #fff; background: rgba(18,55,93,.91); padding: 18px 22px; border-radius: 9px; font-family: var(--mp-display); font-size: 1.2rem; line-height: 1.25; }
 .mp-image-badge svg { color: #eed5c1; flex: none; }
 .mp-about-copy h2 { font-size: clamp(2.9rem,4.5vw,5.2rem); margin: 20px 0 27px; }
@@ -239,8 +299,6 @@ h1 em, h2 em { font-weight: 500; color: #b87786; }
   .mp-footer-grid { grid-template-columns: 1fr; gap: 34px; padding-top: 62px; padding-bottom: 52px; }
   .mp-footer-col:last-child { grid-column: auto; }
   .mp-footer-bottom { flex-direction: column; gap: 6px; padding-bottom: 80px; }
-  .mp-loader-inner { width: min(85vw,350px); }
-  .mp-loader-logo { max-height: 320px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
