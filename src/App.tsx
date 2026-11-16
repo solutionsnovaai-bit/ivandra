@@ -5,6 +5,7 @@ import {
   Flower2, Heart, Instagram, MapPin, Menu, MessageCircle, Sparkles, X,
 } from 'lucide-react'
 import { SITE, MENSAGENS } from './config/site'
+import { ResultsCarousel, type ResultCard } from './components/ResultsCarousel'
 
 const assets = {
   heroDesktop: '/michele/hero-desktop.webp',
@@ -12,7 +13,6 @@ const assets = {
   monogram: '/michele/monograma.webp',
   navLogo: '/michele/catalogo/navbar-monograma.webp',
   clinicPhoto: '/michele/catalogo/nosso-espaco.webp',
-  fullLogo: '/michele/logo-loader.webp',
   ritual: '/michele/ritual.webp',
   portrait: '/michele/retrato-da-arte-mobile.webp',
 }
@@ -43,160 +43,86 @@ function Reveal({ children, className = '', delay = 0 }: {children: ReactNode;cl
 
 type LoaderPhase = 'drawing' | 'flight' | 'curtain'
 
-/**
- * Abertura vetorial inspirada na arquitetura anterior da Ivandra:
- * círculo desenhado por stroke, traços caligráficos MP, lótus pétala a pétala,
- * assinatura em movimento e voo do monograma para a marca da navbar.
- * O progresso considera fontes e hero carregados, com escape de segurança.
- */
 function Loader({ active, onFinished }: { active: boolean; onFinished: () => void }) {
   const reduced = useReducedMotion()
-  const markRef = useRef<HTMLDivElement>(null)
+  const markRef = useRef<HTMLImageElement>(null)
   const [phase, setPhase] = useState<LoaderPhase>('drawing')
-  const [percentage, setPercentage] = useState(0)
   const [flight, setFlight] = useState({ x: 0, y: 0, scale: 1 })
 
   useEffect(() => {
-    if (!active || reduced) return
+    if (!active) return
+    if (reduced) { onFinished(); return }
     let alive = true
-    let frame = 0
     const timers: number[] = []
-    const wait = (fn: () => void, ms: number) => {
-      const timer = window.setTimeout(() => { if (alive) fn() }, ms)
-      timers.push(timer)
+    function wait(ms: number) {
+      return new Promise<void>(resolve => { timers.push(window.setTimeout(resolve, ms)) })
     }
-    let visited = false
-    try { visited = sessionStorage.getItem('mp-intro-completa') === '1' } catch { /* navegacao privada */ }
-    const minimum = visited ? 1500 : 3150
-    const started = performance.now()
-    let assetsReady = false
 
-    const hero = new Image()
-    hero.src = window.matchMedia('(max-width: 900px)').matches ? assets.heroMobile : assets.heroDesktop
-    const imageReady = hero.decode().catch(() => undefined)
-    // Evita uma tela permanente se um asset falhar ou a rede estiver instável.
-    const timeout = new Promise<void>(resolve => wait(() => resolve(), 6500))
-    void Promise.race([Promise.all([document.fonts.ready, imageReady]), timeout])
-      .then(() => { if (alive) assetsReady = true })
-
-    const draw = (now: number) => {
+    async function open() {
+      let visited = false
+      try { visited = sessionStorage.getItem('mp-intro-completa') === '1' } catch { /* Armazenamento indisponível. */ }
+      const hero = new Image()
+      hero.src = window.matchMedia('(max-width: 900px)').matches ? assets.heroMobile : assets.heroDesktop
+      await Promise.all([
+        wait(visited ? 650 : 1650),
+        Promise.race([Promise.all([document.fonts.ready, hero.decode().catch(() => undefined)]), wait(5000)]),
+      ])
       if (!alive) return
-      const elapsed = now - started
-      const tentative = Math.min(100, elapsed / minimum * 100)
-      setPercentage(Math.floor(assetsReady ? tentative : Math.min(tentative, 94)))
-      if (elapsed < minimum || !assetsReady) {
-        frame = requestAnimationFrame(draw)
-        return
+      const mark = markRef.current?.getBoundingClientRect()
+      const header = document.querySelector('.mp-brand img')?.getBoundingClientRect()
+      if (mark && header && mark.width > 0) {
+        setFlight({
+          x: header.left + header.width / 2 - (mark.left + mark.width / 2),
+          y: header.top + header.height / 2 - (mark.top + mark.height / 2),
+          scale: header.width / mark.width,
+        })
       }
-      setPercentage(100)
-      wait(() => {
-        const mark = markRef.current?.getBoundingClientRect()
-        const header = document.querySelector('.mp-brand img')?.getBoundingClientRect()
-        if (mark && header) {
-          setFlight({
-            x: header.left + header.width / 2 - (mark.left + mark.width / 2),
-            y: header.top + header.height / 2 - (mark.top + mark.height / 2),
-            scale: Math.max(.12, Math.min(.35, header.width / mark.width)),
-          })
-        }
-        setPhase('flight')
-        wait(() => {
-          setPhase('curtain')
-          wait(() => {
-            try { sessionStorage.setItem('mp-intro-completa', '1') } catch { /* navegacao privada */ }
-            onFinished()
-          }, 1280)
-        }, visited ? 670 : 1000)
-      }, 180)
+      setPhase('flight')
+      await wait(720)
+      if (!alive) return
+      setPhase('curtain')
+      await wait(720)
+      if (!alive) return
+      try { sessionStorage.setItem('mp-intro-completa', '1') } catch { /* Armazenamento indisponível. */ }
+      onFinished()
     }
-    frame = requestAnimationFrame(draw)
+
+    void open()
     return () => {
       alive = false
-      cancelAnimationFrame(frame)
       timers.forEach(clearTimeout)
     }
   }, [active, reduced, onFinished])
 
   return <AnimatePresence>
-    {active && <motion.div
-      className={'mp-loader mp-loader-v2 mp-stage-' + phase}
-      role="status" aria-live="polite" aria-label="Preparando o espaço da Dra. Michele Pira"
-      initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .25 }}>
-      <motion.div className="mp-loader-veil" aria-hidden="true" />
-      <motion.div className="mp-loader-paper" aria-hidden="true" />
-      <div className="mp-loader-sheen" aria-hidden="true" />
+    {active && <motion.div className={`mp-loader mp-stage-${phase}`}
+      role="status" aria-label="Preparando o espaço da Dra. Michele Pira"
+      exit={{ opacity: 0 }} transition={{ duration: .22 }}>
+      <div className="mp-loader-veil" aria-hidden="true" />
+      <div className="mp-loader-paper" aria-hidden="true" />
+      <motion.div className="mp-loader-orbit" aria-hidden="true"
+        initial={{ opacity: 0, scale: .92, rotate: -18 }}
+        animate={phase === 'drawing' ? { opacity: 1, scale: 1, rotate: 0 } : { opacity: 0, scale: 1.12 }}
+        transition={{ duration: .75, ease: EASE }} />
       <div className="mp-loader-content">
-        <motion.div ref={markRef} className="mp-loader-symbol"
-          initial={false}
-          animate={phase === 'drawing' ? { x: 0, y: 0, scale: 1, opacity: 1 } :
-            { x: flight.x, y: flight.y, scale: flight.scale, opacity: phase === 'curtain' ? 0 : 1 }}
-          transition={phase === 'drawing' ? { duration: 0 } : { duration: .95, ease: [.76, 0, .24, 1] }}>
-          <svg viewBox="0 0 560 390" className="mp-loader-drawing" focusable="false" aria-hidden="true">
-            <defs>
-              <linearGradient id="mp-intro-ink" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stopColor="#163a60"/><stop offset=".6" stopColor="#0e3255"/><stop offset="1" stopColor="#31638a"/>
-              </linearGradient>
-              <linearGradient id="mp-intro-flower" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#f9d8d6"/><stop offset="1" stopColor="#ca7485"/>
-              </linearGradient>
-            </defs>
-            {/* Aro desenhado, como no loader vetorial original. */}
-            <motion.path d="M 377 98 C 362 41 315 25 265 34 C 199 45 159 104 168 172 C 177 245 223 274 282 279 C 331 283 368 268 390 224"
-              fill="none" stroke="url(#mp-intro-ink)" strokeWidth="6.5" strokeLinecap="round"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 1.32, ease: [.6,0,.25,1], delay: .12 }} />
-            {/* Assinatura MP em dois traços caligráficos SVG reais. */}
-            <motion.path d="M 65 167 C 108 141 143 160 176 159 C 202 159 226 126 238 108 C 249 90 257 102 247 126 L 215 211 C 204 240 214 246 230 221 C 256 180 281 133 294 141 C 308 151 276 204 286 212 C 296 225 333 147 354 149 C 379 150 342 223 357 230 C 374 242 409 183 489 170"
-              fill="none" stroke="url(#mp-intro-ink)" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 1.16, ease: [.22,1,.36,1], delay: .52 }} />
-            <motion.path d="M 332 240 C 344 218 358 190 369 161 C 377 144 389 147 386 161"
-              fill="none" stroke="url(#mp-intro-ink)" strokeWidth="5" strokeLinecap="round"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: .82, delay: 1.05, ease: EASE }} />
-            {/* Lótus nascendo pétala a pétala, não um GIF ou uma imagem estática. */}
-            <g transform="translate(394 224)">
-              {[
-                'M 0 0 Q -19 -23 0 -56 Q 19 -23 0 0 Z',
-                'M 0 0 Q -45 -18 -40 -47 Q -9 -42 0 0 Z',
-                'M 0 0 Q 45 -18 40 -47 Q 9 -42 0 0 Z',
-                'M 0 0 Q -44 0 -59 -28 Q -26 -26 0 0 Z',
-                'M 0 0 Q 44 0 59 -28 Q 26 -26 0 0 Z',
-              ].map((d, i) =>
-                <motion.path key={i} d={d} fill="url(#mp-intro-flower)"
-                  stroke="#b97b83" strokeWidth="1.7"
-                  initial={{ opacity: 0, scale: .25, y: 14 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  style={{ transformOrigin: '0px 0px' }}
-                  transition={{ duration: .63, delay: .96 + i * .15, ease: [.22,1,.36,1] }} />
-              )}
-              <motion.path d="M -59 -9 Q 0 14 59 -9" fill="none" stroke="#b68e68" strokeWidth="2"
-                initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ delay: 1.76, duration: .55 }} />
-            </g>
-            <motion.text x="280" y="325" textAnchor="middle" fill="#173a60"
-              className="mp-loader-name"
-              initial={{ opacity: 0, y: 15, letterSpacing: '0.48em' }}
-              animate={{ opacity: 1, y: 0, letterSpacing: '0.23em' }}
-              transition={{ duration: .9, delay: 1.45, ease: EASE }}>MICHELE PIRA</motion.text>
-            <motion.text x="280" y="352" textAnchor="middle" fill="#9e7b68"
-              className="mp-loader-subtitle" initial={{ opacity: 0, y: 9 }}
-              animate={{ opacity: 1, y: 0 }} transition={{ duration: .78, delay: 1.94 }}>
-              ESTÉTICA · SAÚDE INTEGRATIVA
-            </motion.text>
-          </svg>
+        <motion.div className="mp-loader-flight"
+          animate={phase === 'drawing' ? { x: 0, y: 0, scale: 1, opacity: 1 } : { ...flight, opacity: phase === 'curtain' ? 0 : 1 }}
+          transition={phase === 'curtain' ? { duration: .18 } : { duration: .7, ease: [.76, 0, .24, 1] }}>
+          <motion.div className="mp-loader-mark"
+            initial={{ opacity: 0, scale: .92, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: .7, ease: EASE }}>
+            <img ref={markRef} src={assets.navLogo} width={342} height={266} alt="" fetchPriority="high" />
+            <span aria-hidden="true" />
+          </motion.div>
         </motion.div>
-        <motion.p className="mp-loader-caption" initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: phase === 'drawing' ? 1 : 0, y: phase === 'drawing' ? 0 : -15 }}
-          transition={{ duration: .7, delay: .6 }}>Beleza que respeita a sua essência.</motion.p>
-      </div>
-      <div className="mp-loader-meter" aria-hidden="true">
-        <span className="mp-loader-counter">{String(percentage).padStart(2, '0')}</span>
-        <span className="mp-loader-track"><span style={{ transform: 'scaleX(' + percentage / 100 + ')' }} /></span>
-        <span className="mp-loader-meter-label">PREPARANDO SEU MOMENTO</span>
+        <motion.div className="mp-loader-signature"
+          initial={{ opacity: 0, y: 10 }}
+          animate={phase === 'drawing' ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }}
+          transition={{ duration: phase === 'drawing' ? .55 : .2, delay: phase === 'drawing' ? .22 : 0, ease: EASE }}>
+          <span>Michele Pira</span>
+          <small>{SITE.assinatura}</small>
+        </motion.div>
       </div>
     </motion.div>}
   </AnimatePresence>
@@ -292,17 +218,17 @@ const services: CatalogService[] = [
   },
   {
     id: '03', title: 'Skinbooster', category: 'Hidratação da pele',
-    description: 'Saiba quando esse cuidado pode integrar um planejamento voltado à qualidade da pele.',
+    description: 'Converse na avaliação sobre como esse cuidado pode fazer parte do seu planejamento para a pele.',
     image: 'skinbooster', alt: 'Imagens comparativas faciais do catálogo, com marca MP original',
   },
   {
     id: '04', title: 'Hydra Gloss Lips', category: 'Cuidados labiais',
-    description: 'Uma proposta de cuidado labial que pode ser conversada durante sua avaliação.',
+    description: 'Um cuidado labial para quem busca hidratação e um acabamento delicado.',
     image: 'hydra-gloss-lips', alt: 'Fotografia de lábios do catálogo Hydra Gloss Lips',
   },
   {
     id: '05', title: 'Limpeza de pele convencional', category: 'Cuidados faciais',
-    description: 'Atendimento voltado à higiene e aos cuidados da pele, conforme sua avaliação.',
+    description: 'Um cuidado voltado à higienização da pele, planejado conforme a sua avaliação.',
     image: 'limpeza-convencional', alt: 'Montagem de fotografias de limpeza de pele do catálogo',
   },
   {
@@ -332,7 +258,7 @@ const services: CatalogService[] = [
   },
   {
     id: '11', title: 'Glúteos UP', category: 'Estética corporal',
-    description: 'Uma das opções de cuidados corporais apresentadas pela profissional.',
+    description: 'Uma opção de cuidado corporal para conversar na avaliação, a partir das suas preferências.',
     image: 'gluteos-up', alt: 'Montagem corporal com a marca Michele Pira no catálogo Glúteos UP',
   },
   {
@@ -341,6 +267,30 @@ const services: CatalogService[] = [
     image: 'manchas-senis', alt: 'Montagem da pele do catálogo de remoção de manchas senis',
   },
 ]
+const resultOrder = [
+  'mesoterapia-enzimas', 'lipoenzimatica-papada', 'gluteos-up', 'manchas-senis',
+  'hydra-gloss-lips', 'skinbooster', 'limpeza-convencional', 'toxina-botulinica', 'preenchimento',
+]
+
+const resultCards: ResultCard[] = [
+  ...resultOrder.flatMap(image => services.filter(service => service.image === image).map(service => ({
+    title: service.title,
+    description: service.description,
+    image: `/michele/catalogo/${image}.webp`,
+    alt: service.alt,
+    source: 'Fotografia do catálogo' as const,
+    size: 480,
+  }))),
+  {
+    title: 'Nosso espaço',
+    description: 'Um ambiente reservado para conversar com calma e planejar seu cuidado.',
+    image: '/michele/carrossel/nosso-espaco-editorial.webp',
+    alt: 'Ilustração editorial da sala de atendimento, com mesa branca e maca azul',
+    source: 'Arte editorial',
+    size: 1100,
+  },
+]
+
 function Philosophy() {
   return <section className="mp-philosophy mp-section" id="filosofia">
     <div className="mp-container">
@@ -368,7 +318,7 @@ function Services() {
           <h2 id="mp-services-title">Cuidados para a pele, <em>rosto e corpo.</em></h2>
         </Reveal>
         <Reveal>
-          <p>Da toxina botulínica e do preenchimento aos peelings, skinbooster, mesoterapia e tratamentos corporais: conheça as opções do catálogo da Dra. Michele Pira.</p>
+          <p>Explore os cuidados faciais, labiais e corporais da Dra. Michele Pira. A avaliação é o momento de conversar sobre suas prioridades e planejar o atendimento.</p>
         </Reveal>
       </div>
       <div className="mp-services-grid mp-catalog-grid">
@@ -542,7 +492,7 @@ export default function App() {
     <Loader active={loading} onFinished={finishLoading}/>
     <Header/>
     <main>
-      <Hero/><Philosophy/><Services/><OurSpace/><About/><Quote/><HowItWorks/><Location/><FinalCta/>
+      <Hero/><Philosophy/><Services/><ResultsCarousel cards={resultCards} evaluationUrl={wa()}/><OurSpace/><About/><Quote/><HowItWorks/><Location/><FinalCta/>
     </main>
     <Footer/>
     <a href={wa()} target="_blank" rel="noopener noreferrer" className="mp-fab" aria-label="Agendar avaliação pelo WhatsApp"><MessageCircle size={24}/><span className="mp-fab-pulse"/></a>
