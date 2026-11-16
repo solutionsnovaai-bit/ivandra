@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { SITE } from '../config/site'
 
 const revealEase = [.22, 1, .36, 1] as const
 const exitEase = [.76, 0, .24, 1] as const
@@ -10,15 +9,15 @@ const exitDuration = .84
 
 // These paths are brushes for the mask. The visible artwork is always the official logo.
 const strokes = [
-  { d: 'M276 100 C265 51 227 17 181 18 C134 17 94 52 82 94', width: 21, delay: .08, duration: .74 },
-  { d: 'M81 108 C74 146 93 188 129 208 C174 237 229 224 263 180', width: 20, delay: .38, duration: .8 },
+  { d: 'M276 100 C265 51 227 17 181 18 C134 17 94 52 82 94', width: 21, delay: .08, duration: .74, clip: 'url(#mp-intro-top-arc)' },
+  { d: 'M81 108 C74 146 93 188 129 208 C174 237 229 224 263 180', width: 20, delay: .38, duration: .8, clip: 'url(#mp-intro-bottom-arc)' },
   { d: 'M21 118 C8 114 19 98 42 97 C68 96 86 109 131 96 C140 88 124 118 118 138 C130 117 151 77 167 77 C179 78 159 112 153 135 C162 117 177 96 185 100 C192 104 169 145 178 141 C191 135 207 108 213 93', width: 14, delay: .58, duration: .95 },
   { d: 'M214 92 C209 101 198 132 176 185', width: 14, delay: 1.12, duration: .37 },
   { d: 'M203 114 C214 96 227 85 236 92 C246 100 233 122 219 133 C205 144 199 132 215 123 C238 112 263 112 285 119 C306 125 322 125 324 113', width: 16, delay: 1.2, duration: .53 },
   { d: 'M264 180 Q249 161 264 132 Q284 156 264 180', width: 22, delay: 1.51, duration: .31 },
   { d: 'M264 180 Q239 171 242 139 M264 180 Q239 180 227 148 M264 180 Q238 190 216 164', width: 17, delay: 1.63, duration: .31 },
   { d: 'M264 180 Q289 169 288 139 M264 180 Q291 178 302 148 M264 180 Q290 189 310 164', width: 17, delay: 1.68, duration: .31 },
-] as const
+] satisfies ReadonlyArray<{ d: string; width: number; delay: number; duration: number; clip?: string }>
 
 function hasSeenIntro() {
   try { return sessionStorage.getItem(replayKey) === '1' }
@@ -123,9 +122,11 @@ export function BrandIntro({ active, onFinished, artwork, heroDesktop, heroMobil
           transition={{ duration: .78, ease: exitEase, opacity: { duration: .78, times: [0, .76, 1] } }}>
           <svg ref={mark} className="mp-intro-logo" viewBox="0 0 332 240" focusable="false">
             <defs>
+              <clipPath id="mp-intro-top-arc"><path d="M0 0 H332 V103 H238 V96 H0 Z" /></clipPath>
+              <clipPath id="mp-intro-bottom-arc"><path d="M0 106 H117 V166 L157 202 L201 210 L252 184 L269 180 V240 H0 Z" /></clipPath>
               <mask id="mp-intro-brush" maskUnits="userSpaceOnUse" x="0" y="0" width="332" height="240">
-                {strokes.map(({ d, width, delay, duration }) => <motion.path key={d} d={d}
-                  fill="none" stroke="white" strokeWidth={width} strokeLinecap="round" strokeLinejoin="round"
+                {strokes.map(({ d, width, delay, duration, clip }) => <motion.path key={d} d={d}
+                  fill="none" clipPath={clip} stroke="white" strokeWidth={width} strokeLinecap="round" strokeLinejoin="round"
                   initial={{ pathLength: 0, opacity: 0 }}
                   animate={{ pathLength: 1, opacity: 1 }}
                   transition={{
@@ -158,12 +159,12 @@ export function BrandIntro({ active, onFinished, artwork, heroDesktop, heroMobil
             </g>
           </svg>
         </motion.div>
-        <motion.div className="mp-intro-signature"
-          initial={{ opacity: 0, y: 10 }}
-          animate={opening ? { opacity: 0, y: -12 } : { opacity: 1, y: 0 }}
-          transition={{ duration: opening ? .23 : .58 * tempo, delay: opening ? 0 : 1.49 * tempo, ease: revealEase }}>
-          <span>Michele Pira</span><small>{SITE.assinatura}</small>
-        </motion.div>
+        <motion.svg className="mp-intro-signature" viewBox="334 63 616 118" focusable="false"
+          initial={{ opacity: 0, y: 8, clipPath: 'inset(0 48% 0 48%)' }}
+          animate={opening ? { opacity: 0, y: -10 } : { opacity: 1, y: 0, clipPath: 'inset(0 0% 0 0%)' }}
+          transition={{ duration: opening ? .23 : .62 * tempo, delay: opening ? 0 : 1.47 * tempo, ease: revealEase }}>
+          <image href={artwork} width="960" height="240" />
+        </motion.svg>
       </div>
       {!opening && <button type="button" className="mp-intro-skip" onClick={() => {
         rememberIntro()
