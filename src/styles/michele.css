@@ -98,11 +98,9 @@ h1 em, h2 em { font-weight: 500; color: #b87786; }
 .mp-header { position: sticky; z-index: 110; top: 0; width: 100%; background: rgba(255,249,245,.93); border-bottom: 1px solid rgba(18,55,93,.07); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); transition: box-shadow .25s; }
 .mp-header.scrolled { box-shadow: 0 9px 32px rgba(40,35,32,.065); }
 .mp-header-inner { height: 88px; display: flex; align-items: center; gap: clamp(16px,3vw,48px); }
-.mp-brand { display: flex; gap: 9px; align-items: center; flex: none; min-width: 205px; }
-.mp-brand img { height: 51px; width: 76px; object-fit: cover; object-position: center; mix-blend-mode: multiply; border-radius: 10px; }
-.mp-brand span { display: flex; flex-direction: column; gap: 3px; }
-.mp-brand strong { letter-spacing: .13em; font-weight: 800; font-size: 12px; line-height: 1; white-space: nowrap; }
-.mp-brand small { font-size: 8px; letter-spacing: .1em; color: #b17b82; font-weight: 750; white-space: nowrap; }
+.mp-brand { position: relative; display: block; flex: 0 1 336px; min-width: 0; }
+.mp-brand img { display: block; width: 100%; height: auto; mix-blend-mode: multiply; }
+.mp-brand-flight-target { position: absolute; left: 1.5%; top: 5%; width: 32.3%; height: 90%; pointer-events: none; }
 .mp-desktop-nav { display: flex; align-items: center; gap: clamp(12px,2vw,28px); margin-left: auto; }
 .mp-desktop-nav a { font-size: 12px; white-space: nowrap; font-weight: 600; transition: color .2s; }
 .mp-desktop-nav a:hover { color: #c27e8d; }
@@ -211,7 +209,6 @@ h1 em, h2 em { font-weight: 500; color: #b87786; }
   .mp-desktop-nav { gap: 12px; }
   .mp-desktop-nav a { font-size: 11px; }
   .mp-header-cta { padding: 10px 13px; }
-  .mp-brand { min-width: 178px; }
   .mp-hero-copy { width: 48%; }
   .mp-hero h1 { font-size: clamp(2.7rem,4.5vw,3.6rem); }
 }
@@ -219,11 +216,8 @@ h1 em, h2 em { font-weight: 500; color: #b87786; }
   html { scroll-padding-top: 78px; }
   .mp-header-inner { height: 72px; }
   .mp-desktop-nav, .mp-header-cta { display: none; }
-  .mp-brand { min-width: 0; }
-  .mp-brand img { width: 64px; height: 46px; }
-  .mp-brand strong { font-size: 11px; }
-  .mp-brand small { font-size: 7px; }
-  .mp-menu-button { display: flex; }
+  .mp-brand { flex-basis: 270px; }
+  .mp-menu-button { display: flex; flex: 0 0 46px; }
   .mp-mobile-nav { position: absolute; z-index: 120; left: 0; right: 0; top: 100%; padding: 18px max(24px,4vw) 27px; display: flex; flex-direction: column; background: #fffaf6; box-shadow: 0 19px 30px rgba(34,24,20,.11); border-top: 1px solid var(--mp-line); }
   .mp-mobile-nav a { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f2e5de; padding: 14px 5px; font: 500 1.3rem var(--mp-display); }
   .mp-mobile-nav a.mp-menu-cta { margin-top: 13px; color: white; background: var(--mp-navy); padding: 15px 20px; border-radius: 40px; font: 700 13px var(--mp-sans); border: 0; }
@@ -286,15 +280,6 @@ h1 em, h2 em { font-weight: 500; color: #b87786; }
    Nunca ampliar/cortar comparativos para preencher cartões. */
 .mp-header { background: rgba(255,255,255,.985); border-bottom-color: rgba(18,55,93,.08); }
 .mp-header.scrolled { background: rgba(255,255,255,.97); }
-.mp-brand img {
-  width: 78px;
-  height: 62px;
-  object-fit: contain;
-  object-position: center;
-  border-radius: 0;
-  background: white;
-  mix-blend-mode: normal;
-}
 .mp-services-grid.mp-catalog-grid {
   display: grid;
   grid-template-columns: repeat(2,minmax(0,1fr));
@@ -428,13 +413,10 @@ h1 em, h2 em { font-weight: 500; color: #b87786; }
 }
 @media (max-width: 900px) {
   .mp-header { background: #fff; }
-  .mp-brand img { width: 69px; height: 54px; }
   .mp-space-grid { grid-template-columns: 1fr; gap: 39px; }
   .mp-space-photo-wrap { max-width: 380px; }
 }
 @media (max-width: 580px) {
-  .mp-brand { gap: 7px; }
-  .mp-brand img { width: 64px; height: 52px; }
   .mp-header-inner { height: 73px; }
   .mp-services-grid.mp-catalog-grid { display:grid; grid-template-columns: 1fr; gap: 12px; margin-top: 30px; }
   .mp-service-card.mp-catalog-card {

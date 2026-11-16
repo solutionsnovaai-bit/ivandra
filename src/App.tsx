@@ -11,6 +11,7 @@ const assets = {
   heroDesktop: '/michele/hero-desktop.webp',
   heroMobile: '/michele/hero-mobile.webp',
   monogram: '/michele/monograma.webp',
+  horizontalLogo: '/michele/logo-navbar-horizontal.webp',
   navLogo: '/michele/catalogo/navbar-monograma.webp',
   clinicPhoto: '/michele/catalogo/nosso-espaco.webp',
   ritual: '/michele/ritual.webp',
@@ -69,7 +70,7 @@ function Loader({ active, onFinished }: { active: boolean; onFinished: () => voi
       ])
       if (!alive) return
       const mark = markRef.current?.getBoundingClientRect()
-      const header = document.querySelector('.mp-brand img')?.getBoundingClientRect()
+      const header = document.querySelector('.mp-brand-flight-target')?.getBoundingClientRect()
       if (mark && header && mark.width > 0) {
         setFlight({
           x: header.left + header.width / 2 - (mark.left + mark.width / 2),
@@ -146,8 +147,8 @@ function Header() {
   return <header className={`mp-header ${scroll ? 'scrolled' : ''}`}>
     <div className="mp-container mp-header-inner">
       <a href="#inicio" className="mp-brand" aria-label="Dra. Michele Pira, voltar ao início" onClick={() => setOpen(false)}>
-        <img src={assets.navLogo} width="342" height="266" alt="" />
-        <span><strong>MICHELE PIRA</strong><small>ESTÉTICA • SAÚDE INTEGRATIVA</small></span>
+        <img src={assets.horizontalLogo} width="960" height="240" alt="" />
+        <span className="mp-brand-flight-target" aria-hidden="true" />
       </a>
       <nav className="mp-desktop-nav" aria-label="Navegação principal">
         {nav.map(x => <a key={x.href} href={x.href}>{x.label}</a>)}
